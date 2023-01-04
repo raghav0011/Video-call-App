@@ -1,5 +1,5 @@
 // index.js
-require("dotenv").config();
+// require("dotenv").config();
 const http = require("http");
 const express = require("express");
 const { Server: SocketIO } = require("socket.io");

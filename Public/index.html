@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
 
-        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="style.css">
 
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -63,6 +63,7 @@
 
                 const mySteam = await navigator.mediaDevices.getUserMedia({
                     video: true,
+                    audio:true
                 });
 
                 for (const track of mySteam.getTracks()) {
@@ -111,6 +112,7 @@
                 socket.emit('call:accepted', { answer: answerOffer, to: from });
                 const mySteam = await navigator.mediaDevices.getUserMedia({
                     video: true,
+                    audio:true
                 });
 
                 for (const track of mySteam.getTracks()) {
@@ -146,11 +148,16 @@
             const getUserMedia = async () => {
                 const userMedia = await navigator.mediaDevices.getUserMedia({
                     video: true,
+                    audio: true
                 });
 
                 const videoEle = document.getElementById('local-video');
                 videoEle.srcObject = userMedia;
                 videoEle.play()
+
+                const audioEle = document.getElementById('local-audio');
+                audioEle.srcObject = userMedia;
+                audioEle.play()
             }
 
 
