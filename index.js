@@ -1,5 +1,5 @@
 // index.js
-
+require("dotenv").config();
 const http = require("http");
 const express = require("express");
 const { Server: SocketIO } = require("socket.io");
@@ -9,7 +9,6 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new SocketIO(server);
-const PORT = process.env.PORT || 8000;
 
 // Create a users map to keep track of users
 const users = new Map();
@@ -22,6 +21,8 @@ io.on("connection", (socket) => {
   socket.broadcast.emit("users:joined", socket.id);
   socket.emit("hello", { id: socket.id });
 
+  // When a client sends an outgoing call event to another client,
+  // our server sends an incoming call event to the client who is being called, along with the offer.
   socket.on("outgoing:call", (data) => {
     const { fromOffer, to } = data;
 
@@ -29,10 +30,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("call:accepted", (data) => {
-    const { answere, to } = data;
-    socket
-      .to(to)
-      .emit("incomming:answere", { from: socket.id, offer: answere });
+    const { answer, to } = data;
+    socket.to(to).emit("incomming:answer", { from: socket.id, offer: answer });
   });
 
   socket.on("disconnect", () => {
@@ -44,8 +43,17 @@ io.on("connection", (socket) => {
 
 app.use(express.static(path.resolve("./public")));
 
+//A route that gets the users from the user Map and sends them as json.
 app.get("/users", (req, res) => {
   return res.json(Array.from(users));
 });
 
-server.listen(PORT, () => console.log(`Server started at PORT:${PORT}`));
+if (process.env.PROD) {
+  app.use(express.static(path.join(__dirname, "./client/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "./client/build/index.html"));
+  });
+}
+
+const port = process.env.PORT || 8000;
+server.listen(port, () => console.log(`Server started at PORT:${port}`));

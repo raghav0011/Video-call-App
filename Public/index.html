@@ -83,10 +83,10 @@
                 usersDiv.appendChild(btn);
             });
 
-
-            socket.on('incomming:answere', async data => {
+            //A listener for incoming: answer
+            socket.on('incomming:answer', async data => {
                 const status = document.getElementById('status');
-                status.innerText = 'incomming:answere';
+                status.innerText = 'incomming:answer';
 
                 const { offer } = data;
                 await peer.setRemoteDescription(new RTCSessionDescription(offer));
@@ -96,6 +96,7 @@
                 document.getElementById(id).remove()
             })
 
+            //A listener for incoming: call
             socket.on('incomming:call', async data => {
                 const status = document.getElementById('status');
                 status.innerText = 'incomming:call';
@@ -104,10 +105,10 @@
 
                 await peer.setRemoteDescription(new RTCSessionDescription(offer));
 
-                const answereOffer = await peer.createAnswer();
-                await peer.setLocalDescription(new RTCSessionDescription(answereOffer));
+                const answerOffer = await peer.createAnswer();
+                await peer.setLocalDescription(new RTCSessionDescription(answerOffer));
 
-                socket.emit('call:accepted', { answere: answereOffer, to: from });
+                socket.emit('call:accepted', { answer: answerOffer, to: from });
                 const mySteam = await navigator.mediaDevices.getUserMedia({
                     video: true,
                 });
@@ -141,7 +142,7 @@
             socket.on('hello', ({ id }) => document.getElementById('myId').innerText = id)
 
 
-            //Get the user's video and display it on screen
+            //Gets the user's video and display it on screen
             const getUserMedia = async () => {
                 const userMedia = await navigator.mediaDevices.getUserMedia({
                     video: true,

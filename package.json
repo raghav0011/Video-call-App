@@ -4,13 +4,15 @@
   "description": "A simple video calling application",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "PROD=true node index.js"
   },
   "keywords": [],
   "author": "Raghav",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "ngrok": "^4.3.3",
     "socket.io": "^4.5.4"
   }
 }
